@@ -2,10 +2,11 @@ package handler
 
 import (
 	"fmt"
-	"github.com/OysterD3/updater-server-tutorial/env"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
+
+	"github.com/OysterD3/updater-server-tutorial/env"
+	"github.com/labstack/echo/v4"
 )
 
 func (h Handler) Download(c echo.Context) error {

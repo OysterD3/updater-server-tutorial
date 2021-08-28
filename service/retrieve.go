@@ -4,86 +4,86 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/OysterD3/updater-server-tutorial/env"
 	"io/ioutil"
 	"math"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/OysterD3/updater-server-tutorial/env"
 )
 
 type LatestRelease struct {
-	Version string
-	Notes string
+	Version     string
+	Notes       string
 	PublishDate time.Time
-	Platforms map[string]Platform
+	Platforms   map[string]Platform
 }
 
 type Platform struct {
-	APIUrl string
-	Filename string
+	APIUrl      string
+	Filename    string
 	DownloadURL string
 	ContentType string
-	Size float64
+	Size        float64
 }
 
 type GitHubAuthor struct {
-	Login string `json:"login"`
-	ID uint64 `json:"id"`
-	NodeID string `json:"node_id"`
-	AvatarURL string `json:"avatar_url"`
-	GravatarURL string `json:"gravatar_url"`
-	URL string `json:"url"`
-	HTMLUrl string `json:"html_url"`
-	FollowersURL string `json:"followers_url"`
-	FollowingURL string `json:"following_url"`
-	GistsURL string `json:"gists_url"`
-	StarredURL string `json:"starred_url"`
-	SubscriptionsURL string `json:"subscriptions_url"`
-	OrganizationsURL string `json:"organizations_url"`
-	ReposURL string `json:"repos_url"`
-	EventsURL string `json:"events_url"`
+	Login             string `json:"login"`
+	ID                uint64 `json:"id"`
+	NodeID            string `json:"node_id"`
+	AvatarURL         string `json:"avatar_url"`
+	GravatarURL       string `json:"gravatar_url"`
+	URL               string `json:"url"`
+	HTMLUrl           string `json:"html_url"`
+	FollowersURL      string `json:"followers_url"`
+	FollowingURL      string `json:"following_url"`
+	GistsURL          string `json:"gists_url"`
+	StarredURL        string `json:"starred_url"`
+	SubscriptionsURL  string `json:"subscriptions_url"`
+	OrganizationsURL  string `json:"organizations_url"`
+	ReposURL          string `json:"repos_url"`
+	EventsURL         string `json:"events_url"`
 	ReceivedEventsURL string `json:"received_events_url"`
-	Type string `json:"type"`
-	SiteAdmin bool `json:"site_admin"`
+	Type              string `json:"type"`
+	SiteAdmin         bool   `json:"site_admin"`
 }
 
 type GitHubReleaseAsset struct {
-	URL string `json:"url"`
-	ID uint64 `json:"id"`
-	Name string `json:"name"`
-	NodeID string `json:"node_id"`
-	Label string `json:"label"`
-	Uploader GitHubAuthor `json:"uploader"`
-	ContentType string `json:"content_type"`
-	State string `json:"state"`
-	Size uint64 `json:"size"`
-	DownloadCount uint64 `json:"download_count"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	BrowserDownloadURL string `json:"browser_download_url"`
+	URL                string       `json:"url"`
+	ID                 uint64       `json:"id"`
+	Name               string       `json:"name"`
+	NodeID             string       `json:"node_id"`
+	Label              string       `json:"label"`
+	Uploader           GitHubAuthor `json:"uploader"`
+	ContentType        string       `json:"content_type"`
+	State              string       `json:"state"`
+	Size               uint64       `json:"size"`
+	DownloadCount      uint64       `json:"download_count"`
+	CreatedAt          time.Time    `json:"created_at"`
+	UpdatedAt          time.Time    `json:"updated_at"`
+	BrowserDownloadURL string       `json:"browser_download_url"`
 }
 
 type GitHubRelease struct {
-	URL string `json:"url"`
-	AssetsURL string `json:"assets_url"`
-	UploadURL string `json:"upload_url"`
-	ID uint64 `json:"id"`
-	Author GitHubAuthor `json:"author"`
-	NodeID string `json:"node_id"`
-	TagName string `json:"tag_name"`
-	TargetCommitish string `json:"target_commitish"`
-	Name string `json:"name"`
-	Draft bool `json:"draft"`
-	Prerelease bool `json:"prerelease"`
-	CreatedAt time.Time `json:"created_at"`
-	PublishedAt time.Time `json:"published_at"`
-	Assets []GitHubReleaseAsset `json:"assets"`
-	TarballURL string `json:"tarball_url"`
-	ZipballURL string `json:"zipball_url"`
-	Body string `json:"body"`
+	URL             string               `json:"url"`
+	AssetsURL       string               `json:"assets_url"`
+	UploadURL       string               `json:"upload_url"`
+	ID              uint64               `json:"id"`
+	Author          GitHubAuthor         `json:"author"`
+	NodeID          string               `json:"node_id"`
+	TagName         string               `json:"tag_name"`
+	TargetCommitish string               `json:"target_commitish"`
+	Name            string               `json:"name"`
+	Draft           bool                 `json:"draft"`
+	Prerelease      bool                 `json:"prerelease"`
+	CreatedAt       time.Time            `json:"created_at"`
+	PublishedAt     time.Time            `json:"published_at"`
+	Assets          []GitHubReleaseAsset `json:"assets"`
+	TarballURL      string               `json:"tarball_url"`
+	ZipballURL      string               `json:"zipball_url"`
+	Body            string               `json:"body"`
 }
-
 
 func (s *Service) RetrieveGitHubReleases(version string) (*LatestRelease, error) {
 	repo := fmt.Sprintf("%s/%s", env.Config.GitHub.Account, env.Config.GitHub.Repository)
@@ -143,11 +143,11 @@ func (s *Service) RetrieveGitHubReleases(version string) (*LatestRelease, error)
 		str := strings.Split(asset.Name, ".")
 		ext := str[len(str)-1]
 		platform := Platform{
-			APIUrl: asset.URL,
-			Filename: asset.Name,
+			APIUrl:      asset.URL,
+			Filename:    asset.Name,
 			DownloadURL: asset.BrowserDownloadURL,
 			ContentType: asset.ContentType,
-			Size:        math.Round(float64(asset.Size / 1000000 * 10)) / 10,
+			Size:        math.Round(float64(asset.Size/1000000*10)) / 10,
 		}
 
 		if ext == "msi" {

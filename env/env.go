@@ -1,19 +1,20 @@
 package env
 
 import (
+	"reflect"
+
 	"github.com/caarlos0/env/v6"
 	"github.com/joho/godotenv"
-	"reflect"
 )
 
 var (
-	Config     = struct {
-		Env string `env:"ENV,required"`
-		Port         string          `env:"PORT,required" envDefault:"1000"`
-		GitHub struct{
+	Config = struct {
+		Env    string `env:"ENV,required"`
+		Port   string `env:"PORT,required" envDefault:"1000"`
+		GitHub struct {
 			AccessToken string `env:"GITHUB_ACCESS_TOKEN,required"`
-			Account string `env:"GITHUB_ACCOUNT,required"`
-			Repository string `env:"GITHUB_REPOSITORY,required"`
+			Account     string `env:"GITHUB_ACCOUNT,required"`
+			Repository  string `env:"GITHUB_REPOSITORY,required"`
 		}
 		ServiceURL string `env:"SERVICE_URL,required"`
 	}{}
